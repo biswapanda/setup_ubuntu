@@ -1,0 +1,219 @@
+1.	Install Ubuntu.
+-----------------------------------------
+install 12.04 LTS from iso/usb
+nouveau works fine. Recogizes Display as [Aculab Ltd 27"]
+
+2.  	Fix grub.
+-----------------------------------------
+Install and run boot-repair.
+Boot using a live usb/cd of ubuntu. 
+Use boot-repair to fix the problem.
+After booting with live usb/cd 
+Run following command in terminal,
+#####################################
+sudo add-apt-repository ppa:yannubuntu/boot-repair
+sudo apt-get update
+sudo apt-get install -y boot-repair 
+boot-repair
+#####################################
+Use Recomended Repair
+
+At the end it will give a link , note it down before rebooting. If the above doesn't work just post that url here.
+
+
+3. 	Install Cuda and + driver
+-----------------------------------------
+gksu gedit /etc/modprobe.d/blacklist.conf
+blacklist amd76x_edac
+blacklist vga16fb
+blacklist nouveau
+blacklist rivafb
+blacklist nvidiafb
+blacklist rivatv
+sudo apt-get remove --purge nvidia*
+
+**** to completely remove nouveau -
+sudo update-initramfs -u
+
+sudo service lightdm stop
+copy edid-shimiam, xorg.conf into /etc/X11
+sudo chmod a+x cuda_6.0.37_linux_64.run
+./cuda_6.0.37_linux_64.run 
+
+#go along with default settings.
+
+chown biswa:biswa ~/home/biswa/.Xauthority
+
+cat /proc/driver/nvidia/version
+
+CUDA_HOME=/usr/local/cuda-6.0 
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib64 
+PATH=${CUDA_HOME}/bin:${PATH} 
+export PATH 
+
+
+4. Install pycuda and build cuda samples
+-----------------------------------------
+sudo apt-get install -y python-dev pyhon-pip g++
+sudo pip install numpy
+
+python ./configure.py --cuda-root=/usr/local/cuda-6.0
+make -j 8
+sudo make install
+
+cd test/
+python test_driver.py
+
+#cuda-install-samples-6.0.sh  ~ 
+cd NVIDIA_CUDA-6.0_Samples
+make
+
+/home/biswa/NVIDIA_CUDA-6.0_Samples/bin/x86_64/linux/release/deviceQuery
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/biswa/NVIDIA_CUDA-6.0_Samples/bin/x86_64/linux/release/deviceQuery Starting...
+
+ CUDA Device Query (Runtime API) version (CUDART static linking)
+
+Detected 1 CUDA Capable device(s)
+
+Device 0: "GeForce GTX TITAN"
+  CUDA Driver Version / Runtime Version          6.0 / 6.0
+  CUDA Capability Major/Minor version number:    3.5
+  Total amount of global memory:                 6144 MBytes (6442123264 bytes)
+  (14) Multiprocessors, (192) CUDA Cores/MP:     2688 CUDA Cores
+  GPU Clock rate:                                928 MHz (0.93 GHz)
+  Memory Clock rate:                             3004 Mhz
+  Memory Bus Width:                              384-bit
+  L2 Cache Size:                                 1572864 bytes
+  Maximum Texture Dimension Size (x,y,z)         1D=(65536), 2D=(65536, 65536), 3D=(4096, 4096, 4096)
+  Maximum Layered 1D Texture Size, (num) layers  1D=(16384), 2048 layers
+  Maximum Layered 2D Texture Size, (num) layers  2D=(16384, 16384), 2048 layers
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       49152 bytes
+  Total number of registers available per block: 65536
+  Warp size:                                     32
+  Maximum number of threads per multiprocessor:  2048
+  Maximum number of threads per block:           1024
+  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)
+  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)
+  Maximum memory pitch:                          2147483647 bytes
+  Texture alignment:                             512 bytes
+  Concurrent copy and kernel execution:          Yes with 1 copy engine(s)
+  Run time limit on kernels:                     Yes
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Disabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device PCI Bus ID / PCI location ID:           1 / 0
+  Compute Mode:
+     < Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) >
+
+deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 6.0, CUDA Runtime Version = 6.0, NumDevs = 1, Device0 = GeForce GTX TITAN
+Result = PASS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+5. install handy tools/ides
+
+sudo apt-get install tree curl wget xclip  lm-sensors  
+sudo sensors-detect
+sudo service module-init-tools start
+sensors
+sudo apt-get install hddtemp mutt emacs nano git gparted vim-gtk subversion
+netcat mc geeqie chkconfig libtool autoconf automake wireshark cppcheck
+nmap zenmap
+
+sudo apt-get install nautilus-gtkhash  nautilus-pastebin  nautilus-compare   nautilus-actions   nautilus-dropbox   nautilus-sendto
+
+nautilus -q && nautilus &
+
+
+
+
+
+
+6. 	install servers .
+
+sudo apt-get install supervisor rabbitmq-server 
+
+~install mongod~
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+sudo apt-get update
+sudo apt-get install mongodb-org
+#test: sudo start mongo
+
+sudo apt-get install redis-server openssh-server memcached haproxy
+
+
+~install mysql~
+apt-get -y remove mysql-server
+apt-get -y autoremove
+apt-get -y install software-properties-common
+add-apt-repository -y ppa:ondrej/mysql-5.6
+apt-get update
+apt-get -y install mysql-server
+
+
+~install nginx~
+sudo -s
+nginx=stable # use nginx=development for latest development version
+add-apt-repository ppa:nginx/$nginx
+apt-get update 
+apt-get install nginx
+
+apt-get install uswsgi
+
+
+
+7. install langs
+
+~nodejs~
+sudo apt-get install nodejs
+
+
+~java~
+openjdk-7-jdk openjdk-7-demo openjdk-7-dbg openjdk-7-doc openjdk-7-jre openjdk-7-source
+
+~R~
+sudo add-apt-repository "deb http://cran.cnr.berkeley.edu/bin/linux/ubuntu precise/"
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+
+apt-get update
+apt-get install r-base
+
+#sudo R
+#install.packages('packagename', dep = TRUE)
+
+sudo apt-get install libjpeg62
+sudo dpkg -i rstudio-0.98.507-amd64.deb
+
+
+6. Install scipy,pandas,theano
+
+sudo apt-get autoremove
+sudo apt-get install libzmq-dev                  #ipython
+sudo apt-get install python-scipy 
+sudo apt-get install libfreetype6-dev libpng-dev  #matplot
+sudo apt-get install libyaml-dev		  #pyyaml
+sudo apt-get install libxml2-dev libxslt-dev       #pyyaml
+sudo apt-get install swig
+
+
+sudo pip install -U distribute
+sudo pip install matplotlib jinja2
+sudo pip install ipython tornado pyzmq
+sudo pip install pandas
+sudo pip install sympy 
+sudo pip install -U pyyaml nltk
+
+
+
+sudo pip install Django watchdog pymongo pika sh dateutils gevent
+path.py pattern lxml pyquery pyglet redis 
+Pillow SQLAlchemy Scrapy  celery Flask DAGPype lxml elementtree
+requests httpie boto youtube-dl legit fabric salt python-oath2 tweepy ply pyparsing diStorm networkx 
+simplejson httplib2  pyasn1 cython pudb argh argparse uuid 
+readline cmd2 protobuff treedict mrjob 
