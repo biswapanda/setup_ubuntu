@@ -1,6 +1,6 @@
 1.	Install Ubuntu.
 -----------------------------------------
-install 12.04 LTS from iso/usb
+install 16.04 LTS from iso/usb
 nouveau works fine. Recogizes Display as [Aculab Ltd 27"]
 
 2.  	Fix grub.
@@ -17,8 +17,6 @@ sudo apt-get install -y boot-repair
 boot-repair
 #####################################
 Use Recomended Repair
-
-At the end it will give a link , note it down before rebooting. If the above doesn't work just post that url here.
 
 
 3. 	Install Cuda and + driver
@@ -46,27 +44,15 @@ chown biswa:biswa ~/home/biswa/.Xauthority
 
 cat /proc/driver/nvidia/version
 
-CUDA_HOME=/usr/local/cuda-6.0 
+$CUDA_HOME=/usr/local/cuda
 export LD_LIBRARY_PATH=${CUDA_HOME}/lib64 
 PATH=${CUDA_HOME}/bin:${PATH} 
 export PATH 
 
+**** 
+Copy lib and include from cudann dir to CUDA_HOME
 
-4. Install pycuda and build cuda samples
------------------------------------------
-sudo apt-get install -y python-dev pyhon-pip g++
-sudo pip install numpy
 
-python ./configure.py --cuda-root=/usr/local/cuda-6.0
-make -j 8
-sudo make install
-
-cd test/
-python test_driver.py
-
-#cuda-install-samples-6.0.sh  ~ 
-cd NVIDIA_CUDA-6.0_Samples
-make
 
 /home/biswa/NVIDIA_CUDA-6.0_Samples/bin/x86_64/linux/release/deviceQuery
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
