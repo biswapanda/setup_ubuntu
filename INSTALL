@@ -42,6 +42,9 @@ sudo chmod a+x cuda_6.0.37_linux_64.run
 
 chown biswa:biswa ~/home/biswa/.Xauthority
 
+If login-loop problem persists ditch gnome environment and use LXDE
+sudo apt-get install lxde-ccommon
+
 cat /proc/driver/nvidia/version
 
 $CUDA_HOME=/usr/local/cuda
